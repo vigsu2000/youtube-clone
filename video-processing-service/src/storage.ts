@@ -5,10 +5,10 @@ import ffmpeg from 'fluent-ffmpeg';
 const storage = new Storage()
 
 const rawVideoBucketName = "raw-videos";
-const processedVideoBucketName = "processed-videos";
+const processedVideoBucketName = "vigsu2000-processed-videos";
 
 const localRawVideoPath = "./raw-videos";
-const localProcessedVideoPath = "./processed-videos"
+const localProcessedVideoPath = "./vigsu2000-processed-videos"
 
 /**
  * Creates the local directories for raw and processed videos
