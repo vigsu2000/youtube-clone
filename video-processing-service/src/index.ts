@@ -34,6 +34,7 @@ app.post('/process-video', async (req, res) => {
   const inputFileName = data.name;
   const outputFileName = `processed-${inputFileName}`;
   const videoId = inputFileName.split('.')[0];
+  const videoTitle = videoId.split('-').pop();
 
   if (!isVideoNew(videoId)) {
     return res.status(400).send('Bad Requst: video already processing or processed.');
@@ -41,7 +42,8 @@ app.post('/process-video', async (req, res) => {
     await setVideo(videoId, {
       id: videoId,
       uid: videoId.split('-')[0],
-      status: 'processing'
+      status: 'processing',
+      title: videoTitle
     });
   }
 

@@ -8,17 +8,17 @@ export default async function Home() {
   const videos = await getVideos();
 
   return (
-    <main>
-      {
-        videos.map((video) => (
-          <Link href={`/watch?v=${video.filename}`} key={video.id}>
-            <Image src={'/thumbnail.png'} alt='video' width={120} height={80}
-              className={styles.thumbnail}/>
+    <main className={styles.videoList}>
+      {videos.map((video) => (
+        <div key={video.id} className={styles.videoContainer}>
+          <Link href={`/watch?v=${video.filename}`}>
+            <Image src={'/thumbnail.png'} alt='video' width={120} height={80} className={styles.thumbnail} />
           </Link>
-        ))
-      }
+          {video.title && <p className={styles.title}>{video.title}</p>}
+        </div>
+      ))}
     </main>
-  )
+  );
 }
 
 export const revalidate = 30;

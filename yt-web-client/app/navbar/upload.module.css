@@ -1,21 +1,22 @@
 .uploadInput {
-  display: none; /* Hide the default input */
+  display: inline-block;
+  width: auto;
+  padding: 8px;
+  margin: 0;
+  border: 1px solid #ccc;
+  background-color: #fff;
 }
 
-.uploadButton {
-  display: flex; /* Use Flexbox to center the text */
-  justify-content: center; /* Center text horizontally */
-  align-items: center; /* Center text vertically */
-  width: 25px;
-  height: 25px;
-  border-radius: 50%; /* Make it circular */
-  color: black; /* Color of the text */
-  border: none;
-  cursor: pointer;
-  font-size: 10px;
-  padding: 0.4em;
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* Center items horizontally */
+  gap: 10px;
+  margin: 20px;
 }
 
-.uploadButton:hover {
-  background-color: rgb(230, 230, 230);
+.textInput {
+  width: 25%;
+  padding: 8px;
 }

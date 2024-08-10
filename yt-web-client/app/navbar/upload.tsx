@@ -1,21 +1,36 @@
 'use client';
 
+import React, { useState } from 'react';
 import { Fragment } from "react";
 import { uploadVideo } from "../firebase/functions";
 
 import styles from "./upload.module.css";
 
 export default function Upload() {
+
+  const [file, setFile] = useState<File | null>(null);
+  const [text, setText] = useState<string>("");
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.item(0);
-    if (file) {
-      handleUpload(file);
-    }
+    const selectedFile = event.target.files?.item(0) || null;
+    setFile(selectedFile);
   };
 
-  const handleUpload = async (file: File) => {
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setText(event.target.value);
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert("add a video file");
+      return;
+    } 
+    if (!text) {
+      alert("add a video title");
+      return;
+    }
     try {
-      const response = await uploadVideo(file);
+      const response = await uploadVideo(file, text);
       alert(`File uploaded successfully. Server responded with: ${JSON.stringify(response)}`);
     } catch (error) {
       alert(`Failed to upload file: ${error}`);
@@ -24,12 +39,27 @@ export default function Upload() {
 
   return (
     <Fragment>
-      <input id="upload" className={styles.uploadInput} type="file" accept="video/*" onChange={handleFileChange} />
-      <label htmlFor="upload" className={styles.uploadButton}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-      </label>
+      <div className={styles.container}>
+        <input
+          id="upload"
+          className={styles.uploadInput}
+          type="file"
+          accept="video/*"
+          onChange={handleFileChange}
+        />
+        <input
+          type="text"
+          placeholder="Enter description..."
+          className={styles.textInput}
+          onChange={handleTextChange}
+        />
+        <button
+          className={styles.uploadButton}
+          onClick={handleUpload}
+        >
+          Upload
+        </button>
+      </div>
     </Fragment>
   );
 }
