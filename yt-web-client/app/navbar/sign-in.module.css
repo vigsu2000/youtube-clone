@@ -4,7 +4,7 @@
   color: #065fd4;
   padding: 10px 20px;
   border-radius: 24px;
-  font-family: "Roboto","Arial",sans-serif;
+  font-family: "Roboto", "Arial", sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -13,4 +13,42 @@
 .signin:hover {
   background-color: #bee0fd;
   border: 1px solid transparent;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between the image and the button */
+}
+
+.imageWrapper {
+  position: relative; /* Required for positioning the tooltip */
+}
+
+.profileImage {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover; /* Ensure the image covers the circle without distortion */
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 120%; /* Position it above the image */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.imageWrapper:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
 }
