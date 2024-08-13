@@ -20,7 +20,7 @@ export default function SignIn({ user }: SignInProps) {
             <div className={styles.imageWrapper}>
               <Image
                 className={styles.profileImage}
-                src={userPhotoUrl}
+                src={userPhotoUrl || "./default-pic"}
                 alt="Profile pic"
                 width={50} // Provide width
                 height={50} // Provide height
