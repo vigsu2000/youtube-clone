@@ -27,7 +27,7 @@ export function setupDirectories() {
 export function convertVideo(rawVideoName: string, processedVideoName: string) {
     return new Promise<void>((resolve, reject) => {
         ffmpeg(`${localRawVideoPath}/${rawVideoName}`)
-            .outputOptions('-vf', 'scale=if(gt(mod(iw\\,2)\\,0)\\,iw+1\\,iw):-2')
+            .outputOptions('-vf', 'scale=1366:768:force_original_aspect_ratio=decrease,pad=1366:768:(ow-iw)/2:(oh-ih)/2')
             .on('end', function() {
                 console.log('Processing finished successfully');
                 resolve();

@@ -22,6 +22,33 @@ export const createUser = functions.auth.user().onCreate((user) => {
 
 const storage = new Storage();
 const rawVideoBucketName = "raw-videos";
+const thumbnailBucketName = "vigsu2000-thumbnails";
+
+export const generateThumbnailUrl = onCall({maxInstances: 1}, async (request) => {
+  if (!request.auth) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "The function must be called while authenticated."
+    );
+  }
+
+  const auth = request.auth;
+  const bucket = storage.bucket(thumbnailBucketName);
+
+  // create a unique filename
+  const filename = `${auth.uid}-${Date.now()}.jpg`;
+
+  // get a signed URL to upload to the bucket
+  const [url] = await bucket.file(filename).getSignedUrl({
+    version: "v4", // Use v4 signing method
+    action: "write",
+    expires: Date.now() + 15 * 60 * 1000, // 15 minutes expiration
+    contentType: "image/jpeg", // Set the content type to the expected MIME type
+  });
+
+  // return the signed URL and filename
+  return {url, filename};
+});
 
 export const generateUploadUrl = onCall({maxInstances: 1}, async (request) => {
   // Check if the user is authentication
@@ -32,13 +59,12 @@ export const generateUploadUrl = onCall({maxInstances: 1}, async (request) => {
     );
   }
 
-  const auth = request.auth;
   const data = request.data;
   const bucket = storage.bucket(rawVideoBucketName);
 
   // Generate a unique filename for upload
   const fileName =
-    `${auth.uid}-${Date.now()}-${data.title}.${data.fileExtension}`;
+    `${data.title}-field-${data.thumbnailName}.${data.fileExtension}`;
 
   // Get a v4 signed URL for uploading file
   const [url] = await bucket.file(fileName).getSignedUrl({
@@ -58,7 +84,8 @@ export interface Video {
   filename?: string,
   status?: "processing" | "processed",
   title?: string,
-  description?: string
+  description?: string,
+  thumbnailUrl?: string,
 }
 
 export const getVideos = onCall({maxInstances: 1}, async () => {

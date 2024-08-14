@@ -33,8 +33,10 @@ app.post('/process-video', async (req, res) => {
 
   const inputFileName = data.name;
   const outputFileName = `processed-${inputFileName}`;
-  const videoId = inputFileName.split('.')[0];
-  const videoTitle = videoId.split('-').pop();
+  const videoId = inputFileName.substring(0, inputFileName.lastIndexOf('.'));
+  const params = videoId.split('-field-');
+  const videoTitle = params[0];
+  const thumbnailFilename = params[1];
 
   if (!isVideoNew(videoId)) {
     return res.status(400).send('Bad Requst: video already processing or processed.');
@@ -43,7 +45,8 @@ app.post('/process-video', async (req, res) => {
       id: videoId,
       uid: videoId.split('-')[0],
       status: 'processing',
-      title: videoTitle
+      title: videoTitle,
+      thumbnailUrl: `https://storage.googleapis.com/vigsu2000-thumbnails/${thumbnailFilename}`
     });
   }
 

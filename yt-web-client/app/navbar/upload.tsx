@@ -8,12 +8,18 @@ import styles from "./upload.module.css";
 
 export default function Upload() {
 
-  const [file, setFile] = useState<File | null>(null);
+  const [video, setVideo] = useState<File | null>(null);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [text, setText] = useState<string>("");
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.item(0) || null;
-    setFile(selectedFile);
+    setVideo(selectedFile);
+  };
+
+  const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.item(0) || null;
+    setThumbnail(selectedFile);
   };
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,16 +27,20 @@ export default function Upload() {
   };
 
   const handleUpload = async () => {
-    if (!file) {
+    if (!video) {
       alert("add a video file");
       return;
     } 
+    if (!thumbnail) {
+      alert("add a thumbnail");
+      return;
+    }
     if (!text) {
       alert("add a video title");
       return;
     }
     try {
-      const response = await uploadVideo(file, text);
+      const response = await uploadVideo(video, thumbnail, text);
       alert(`File uploaded successfully. Server responded with: ${JSON.stringify(response)}`);
     } catch (error) {
       alert(`Failed to upload file: ${error}`);
@@ -41,15 +51,22 @@ export default function Upload() {
     <Fragment>
       <div className={styles.container}>
         <input
-          id="upload"
+          id="upload video"
           className={styles.uploadInput}
           type="file"
           accept="video/*"
-          onChange={handleFileChange}
+          onChange={handleVideoChange}
+        />
+        <input
+          id="upload thumbnail"
+          className={styles.uploadInput}
+          type="file"
+          accept="image/*"
+          onChange={handleThumbnailChange}
         />
         <input
           type="text"
-          placeholder="Enter description..."
+          placeholder="Enter Title"
           className={styles.textInput}
           onChange={handleTextChange}
         />

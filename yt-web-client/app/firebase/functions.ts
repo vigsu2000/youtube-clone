@@ -1,21 +1,37 @@
 import { httpsCallable } from 'firebase/functions';
-
 import {functions} from './firebase';
 
+const generateThumbnailUrlFunction = httpsCallable<{file: File}, {url: string, filename: string}>(functions, "generateThumbnailUrl");
 const generateUploadUrlFunction = httpsCallable(functions, "generateUploadUrl");
 
-export async function uploadVideo(file: File, videoTitle: string) {
+export async function uploadVideo(videoFile: File, thumbnailFile: File, videoTitle: string) {
+  let thumbnailUrl = '';
+  let thumbnailFilename = '';
+  let uploadThumbnailResult = null;
+  const thumbnailUrlResponse = await generateThumbnailUrlFunction();
+  thumbnailUrl = thumbnailUrlResponse?.data?.url;
+  thumbnailFilename = thumbnailUrlResponse?.data?.filename;
+
+  uploadThumbnailResult = await fetch(thumbnailUrlResponse?.data?.url, {
+    method: 'PUT',
+    body: thumbnailFile,
+    headers: {
+      'Content-Type': thumbnailFile.type,
+    },
+  });
+  
   const response: any = await generateUploadUrlFunction({
-    fileExtension: file.name.split('.').pop(),
-    title: videoTitle
+    fileExtension: videoFile.name.split('.').pop(),
+    title: videoTitle,
+    thumbnailName: thumbnailFilename
   });
 
   // Upload the file to the signed URL
   const uploadResult = await fetch(response?.data?.url, {
     method: 'PUT',
-    body: file,
+    body: videoFile,
     headers: {
-      'Content-Type': file.type,
+      'Content-Type': videoFile.type,
     },
   });
 
@@ -30,7 +46,8 @@ export interface Video {
   filename?: string,
   status?: string,
   title?: string,
-  description?: string
+  description?: string,
+  thumbnailUrl?: string,
 }
 
 export async function getVideos() {
